@@ -29,7 +29,7 @@ import com.vaadin.ui.VerticalLayout;
  * initialize non-component functionality.
  */
 @Theme("mytheme")
-public class MyUI extends UI {
+public class ValidatorUI extends UI {
 
 	/**
 	 * 
@@ -41,6 +41,7 @@ public class MyUI extends UI {
 	 */
 	private final static String TO_SHORT_MESSAGE = "Die NVE/SSCC Nummer ist zu kurz.";
 	private final static String TO_LONG_MESSAGE = "Die NVE/SSCC Nummer ist zu lang.";
+	private final static String NO_NVE_INPUT_MESSAGE = "Bitte geben Sie eine NVE Nummer ein.";
 	private final static String CONTAINS_IN_LIST_MESSAGE = "Die NVE/SSCC Nummer ist bereits in der Liste vorhanden.";
 	private final static String SAVED_CORRECTLY_MESSAGE = "Die NVE/SCCS wurde gespeichert.";
 	private final static String NOT_VALID_MESSAGE = "Die eingegebene NVE/SSCC ist nicht valide.\nVersuchen Sie es erneut.";
@@ -66,7 +67,8 @@ public class MyUI extends UI {
 
 		lb_header = new Label();
 		lb_header.setCaptionAsHtml(true);
-		lb_header.setCaption("<h1>NVE/SSCC Validator Dachser</h1>");
+		lb_header.setCaption("<h2>Nummer der Versandeinheit (NVE/SSCC) Validator</h2>");
+		lb_header.setSizeFull();
 
 		tf_nveNumber = new TextField();
 		tf_nveNumber.setCaption("18-stellige NVE/SSCC hier eingeben:");
@@ -80,7 +82,7 @@ public class MyUI extends UI {
 
 		setContent(verticalLayout);
 	}
-
+	
 	/**
 	 * Adds the NVE number if it is not in the list and if it is valid.
 	 * 
@@ -110,7 +112,10 @@ public class MyUI extends UI {
 	 */
 	private boolean checkLengthOfNVENumber(String nveNumberText) {
 
-		if (nveNumberText.length() - 1 < 17) {
+		if(nveNumberText.length() == 0) {
+			Notification.show(NO_NVE_INPUT_MESSAGE, Type.WARNING_MESSAGE);
+			return false;
+		}else if (nveNumberText.length() - 1 < 17) {
 			Notification.show(TO_SHORT_MESSAGE, Type.WARNING_MESSAGE);
 			return false;
 		} else if (nveNumberText.length() - 1 > 17) {
@@ -121,9 +126,9 @@ public class MyUI extends UI {
 		}
 	}
 
-	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
-	@VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
-	public static class MyUIServlet extends VaadinServlet {
+	@WebServlet(urlPatterns = "/*", name = "ValidatorUIServlet", asyncSupported = true)
+	@VaadinServletConfiguration(ui = ValidatorUI.class, productionMode = false)
+	public static class ValidatorUIServlet extends VaadinServlet {
 
 		/**
 		 * 
